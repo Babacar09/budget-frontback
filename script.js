@@ -1,13 +1,35 @@
+const totalSolde = document.getElementById("monSoldes");
+const totalDepenses = document.getElementById("monprix1Depenses");
+
 document.addEventListener("DOMContentLoaded", () => {
-  // Sélecteurs pour les éléments DOM
-  const validateButton = document.getElementById("validate");
-  //const responseMessage = document.getElementById("responseMessage");
-  // Validation et ajout d'une dépense
-  validateButton.addEventListener("click", () => {
-    const montext = document.getElementById("montext").value;
-    const montant = parseFloat(document.getElementById("montant").value);
-    //const totalMontantDepenses = document.getElementById("monprix1Depenses"); 
-    
+  fetch("http://localhost:3000/solde", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Erreur : ${response.statusText}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      totalSolde.textContent = data.solde + " FCFA";
+    })
+    .catch(error => {
+      responseMessage.textContent = `Erreur : ${error.message}`;
+    });
+});
+
+// Sélecteurs pour les éléments DOM
+const validateButton = document.getElementById("validate");
+//const responseMessage = document.getElementById("responseMessage");
+// Validation et ajout d'une dépense
+validateButton.addEventListener("click", () => {
+  const montext = document.getElementById("montext").value;
+  const montant = parseFloat(document.getElementById("montant").value);
+  //const totalMontantDepenses = document.getElementById("monprix1Depenses");
 
   // // Envoi de la requête pour ajouter une dépense via l'API
   // fetch("http://localhost:3000/depenses/create", {
@@ -36,66 +58,60 @@ document.addEventListener("DOMContentLoaded", () => {
   //     responseMessage.textContent = `Erreur : ${error.message}`;
   //   });
 
-
-
-    // Envoi de la requête pour ajouter une dépense via l'API
-    fetch("http://localhost:3000/depenses/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ title: montext, montant: montant })
+  // Envoi de la requête pour ajouter une dépense via l'API
+  fetch("http://localhost:3000/depenses/create", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ title: montext, montant: montant }),
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Erreur : ${response.statusText}`);
+      }
+      return response.json();
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Erreur : ${response.statusText}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        // Message de succès après ajout de la dépense
-        responseMessage.textContent = "Dépense ajoutée avec succès !";
+    .then(data => {
+      // Message de succès après ajout de la dépense
+      responseMessage.textContent = "Dépense ajoutée avec succès !";
 
-        ajouterLigneToTable(montext, montant, ".deleteLigne");
-        mettreajour();
-        // Mettre à jour le solde après ajout
-      })
+      ajouterLigneToTable(montext, montant, ".deleteLigne");
+      mettreajour();
+      // Mettre à jour le solde après ajout
+    })
 
-      .catch((error) => {
-        responseMessage.textContent = `Erreur : ${error.message}`;
-      });
+    .catch(error => {
+      responseMessage.textContent = `Erreur : ${error.message}`;
+    });
 
-     
-    
-    // Mise à jour du total des dépenses
-  });
-  mettreajour()
-
- // Mise à jour du total des dépenses
-  // const montant = parseFloat(document.getElementById("montant").value);
-
-  //  const totalMontantDepenses = document.getElementById("monprix1Depenses");
-  //  let totalDepenses2 = parseFloat(totalMontantDepenses.textContent) || 0;
-  //  totalDepenses2 += montant;
-  //  totalMontantDepenses.textContent = totalDepenses2.toFixed(2);
-  //  mettreajour();
-  //console.log(typeof(totalMontantDepenses));
-
-  // const MontantToAdd = parseFloat(supprimerLigne.querySelector(".deleteDepense").textContent);
-  // let ToutDesDepenses = parseFloat(document.getElementById("monprix1Depenses").textContent) || 0 ;
-
-  // ToutDesDepenses += MontantToAdd;
-  // document.getElementById("monprix1Depenses").textContent = ToutDesDepenses.toFixed(2);
-
-  // //   // Mettre à jour le solde après suppression
-
-   //console.log(totalMontantDepenses);
-
-   //mettreajour()
-
-  });
-
+  // Mise à jour du total des dépenses
+});
 mettreajour();
+
+// Mise à jour du total des dépenses
+// const montant = parseFloat(document.getElementById("montant").value);
+
+//  const totalMontantDepenses = document.getElementById("monprix1Depenses");
+//  let totalDepenses2 = parseFloat(totalMontantDepenses.textContent) || 0;
+//  totalDepenses2 += montant;
+//  totalMontantDepenses.textContent = totalDepenses2.toFixed(2);
+//  mettreajour();
+//console.log(typeof(totalMontantDepenses));
+
+// const MontantToAdd = parseFloat(supprimerLigne.querySelector(".deleteDepense").textContent);
+// let ToutDesDepenses = parseFloat(document.getElementById("monprix1Depenses").textContent) || 0 ;
+
+// ToutDesDepenses += MontantToAdd;
+// document.getElementById("monprix1Depenses").textContent = ToutDesDepenses.toFixed(2);
+
+// //   // Mettre à jour le solde après suppression
+
+//console.log(totalMontantDepenses);
+
+//mettreajour()
+
+// mettreajour();
 
 // Fonction pour ajouter une ligne dans la table des dépenses
 function ajouterLigneToTable(montext, montant, id, deleteLigne) {
@@ -112,9 +128,6 @@ function ajouterLigneToTable(montext, montant, id, deleteLigne) {
   tbodyTr.insertAdjacentHTML("afterbegin", newRow);
 
   //   // Mise à jour du total des dépenses
-
-  
- 
 
   // Suppression de la ligne de la table
   const buttonSupprimerLigne = tbodyTr.querySelector(`.${deleteLigne}`);
@@ -136,40 +149,44 @@ function ajouterLigneToTable(montext, montant, id, deleteLigne) {
         },
         body: JSON.stringify({ title: montext, montant: montant }),
       })
-        .then((response) => {
+        .then(response => {
           if (!response.ok) {
             throw new Error(`Erreur : ${response.statusText}`);
           }
           return response.json();
         })
-        .then((data) => {
+        .then(data => {
           // Message de succès après ajout de la dépense
           responseMessage.textContent = "Dépense ajoutée avec succès !";
           ajouterLigneToTable(montext, montant, ".deleteLigne");
           mettreajour(); // Mettre à jour le solde après ajout
         })
-        .catch((error) => {
+        .catch(error => {
           responseMessage.textContent = `Erreur : ${error.message}`;
         });
 
       // //   // Mise à jour du total des dépenses
-       const MontantToDelete = parseFloat(supprimerLigne.querySelector(".deleteDepense").textContent);
-       let ToutDesDepenses = parseFloat(document.getElementById("monprix1Depenses").textContent) || 0 ;
+      const MontantToDelete = parseFloat(
+        supprimerLigne.querySelector(".deleteDepense").textContent
+      );
+      let ToutDesDepenses =
+        parseFloat(document.getElementById("monprix1Depenses").textContent) ||
+        0;
 
-       ToutDesDepenses -= MontantToDelete;
-       document.getElementById("monprix1Depenses").textContent = ToutDesDepenses.toFixed(2);
+      ToutDesDepenses -= MontantToDelete;
+      document.getElementById("monprix1Depenses").textContent =
+        ToutDesDepenses.toFixed(2);
 
-        // Mettre à jour le solde après suppression
+      // Mettre à jour le solde après suppression
       mettreajour();
     }
   });
-
 }
-mettreajour();
+// mettreajour();
 
 const validateButton1 = document.getElementById("validate1");
 // Validation et ajout d'un revenu
-validateButton1.addEventListener("click", (even) => {
+validateButton1.addEventListener("click", even => {
   const montext1 = document.getElementById("montext1").value;
   const montant1 = parseFloat(document.getElementById("montant1").value);
 
@@ -186,19 +203,19 @@ validateButton1.addEventListener("click", (even) => {
     },
     body: JSON.stringify({ title: montext1, montant: montant1 }),
   })
-    .then((response) => {
+    .then(response => {
       if (!response.ok) {
         throw new Error(`Erreur : ${response.statusText}`);
       }
       return response.json();
     })
-    .then((data) => {
+    .then(data => {
       // Message de succès après ajout du revenu
       responseMessage.textContent = "Revenu ajouté avec succès !";
       ajouterLigneToTable1(montext1, montant1, ".deleteLigne1");
       mettreajour(); // Mettre à jour le solde après ajout
     })
-    .catch((error) => {
+    .catch(error => {
       responseMessage.textContent = `Erreur : ${error.message}`;
     });
 
@@ -209,7 +226,7 @@ validateButton1.addEventListener("click", (even) => {
   totalMontantRevenus.textContent = totalRevenus.toFixed(2);
   mettreajour();
 });
-mettreajour();
+// mettreajour();
 // Fonction pour ajouter une ligne dans la table des revenus
 function ajouterLigneToTable1(montext1, montant1, id, deleteLigne1) {
   const tbodyTr1 = document.querySelector(".monTableBody1");
@@ -244,19 +261,19 @@ function ajouterLigneToTable1(montext1, montant1, id, deleteLigne1) {
         },
         body: JSON.stringify({ title: montext1, montant: montant1 }),
       })
-        .then((response) => {
+        .then(response => {
           if (!response.ok) {
             throw new Error(`Erreur : ${response.statusText}`);
           }
           return response.json();
         })
-        .then((data) => {
+        .then(data => {
           // Message de succès après ajout de la dépense
           responseMessage.textContent = "Dépense ajoutée avec succès !";
           ajouterLigneToTable(montext1, montant1, ".deleteLigne1");
           mettreajour(); // Mettre à jour le solde après ajout
         })
-        .catch((error) => {
+        .catch(error => {
           responseMessage.textContent = `Erreur : ${error.message}`;
         });
 
@@ -278,75 +295,73 @@ function ajouterLigneToTable1(montext1, montant1, id, deleteLigne1) {
 }
 
 // Fonction pour mettre à jour le solde
- function mettreajour() {
-   const depenses = parseFloat(document.getElementById("monprix1Depenses").textContent) || 0;
-    const revenus = parseFloat(document.getElementById("monprixRevenus").textContent) || 0;
-     const  solde = revenus - depenses
+function mettreajour() {
+  const depenses =
+    parseFloat(document.getElementById("monprix1Depenses").textContent) || 0;
+  const revenus =
+    parseFloat(document.getElementById("monprixRevenus").textContent) || 0;
+  const solde = revenus - depenses;
 
-  fetch('http://localhost:3000/solde', {
+  fetch("http://localhost:3000/solde", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({solde})
+    body: JSON.stringify({ solde }),
   })
-    .then((response) => {
+    .then(response => {
       if (!response.ok) {
         throw new Error(`Erreur : ${response.statusText}`);
       }
       return response.json();
     })
-    .then((data) => {
+    .then(data => {
       // Message de succès après ajout de la dépense
       responseMessage.textContent = "Dépense ajoutée avec succès !";
-       //ajouterLigneToTable(montext1, montant1, ".deleteLigne1");
-       // mettreajour(); // Mettre à jour le solde après ajout
-      //document.getElementById("monSoldes").textContent = solde.toFixed(2)
+      //ajouterLigneToTable(montext1, montant1, ".deleteLigne1");
+      // mettreajour(); // Mettre à jour le solde après ajout
     })
-    .catch((error) => {
+    .catch(error => {
       responseMessage.textContent = `Erreur : ${error.message}`;
     });
 
-    
-  fetch('http://localhost:3000/solde', {
+  fetch("http://localhost:3000/solde", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({solde:solde})
+    body: JSON.stringify({ solde: solde }),
   })
-    .then((response) => {
+    .then(response => {
       if (!response.ok) {
         throw new Error(`Erreur : ${response.statusText}`);
       }
       return response.json();
     })
-    .then((data) => {
+    .then(data => {
       // Message de succès après ajout de la dépense
       responseMessage.textContent = "Dépense ajoutée avec succès !";
       //ajouterLigneToTable(montext1, montant1, ".deleteLigne1");
-       //mettreajour(); // Mettre à jour le solde après ajout
-      document.getElementById("monSoldes").textContent = solde.toFixed(2)
+      //mettreajour(); // Mettre à jour le solde après ajout
+      document.getElementById("monSoldes").textContent = solde.toFixed(2);
     })
-    .catch((error) => {
+    .catch(error => {
       responseMessage.textContent = `Erreur : ${error.message}`;
     });
 
- 
-
   // Affichage du statut du solde
-  if (solde < 0) {
-    document.getElementById("monSoldes").style.color = "red";
-    document.getElementById("notes").innerHTML = "Solde insuffisant";
-    document.getElementById("notes").style.color = "red";
-  } else if (solde > 0) {
-    document.getElementById("monSoldes").style.color = "green";
-    document.getElementById("notes").innerHTML = "Solde positif";
-    document.getElementById("notes").style.color = "green";
-  } else {
-    document.getElementById("notes").innerHTML = "Solde nul";
-    document.getElementById("notes").style.color = "black";
-  }
+  // if (solde < 0) {
+  //   document.getElementById("monSoldes").style.color = "red";
+  //   document.getElementById("notes").innerHTML = "Solde insuffisant";
+  //   document.getElementById("notes").style.color = "red";
+  // } else if (solde > 0) {
+  //   document.getElementById("monSoldes").style.color = "green";
+  //   document.getElementById("notes").innerHTML = "Solde positif";
+  //   document.getElementById("notes").style.color = "green";
+  // } else {
+  //   document.getElementById("notes").innerHTML = "Solde nul";
+  //   document.getElementById("notes").style.color = "black";
+  // }
 }
 
 // Affichage des formulaires
@@ -376,9 +391,14 @@ close1.onclick = function () {
 
 // Charger les dépenses et revenus à l'initialisation de la page
 fetch("http://localhost:3000/depenses")
-  .then((response) => response.json())
-  .then((data) => {
-    data.forEach((item) => {
+  .then(response => response.json())
+  .then(data => {
+    const montantTotalDepenses = data.reduce(
+      (acc, val) => acc + val.montant,
+      0
+    );
+    totalDepenses.textContent = montantTotalDepenses + " FCFA";
+    data.forEach(item => {
       ajouterLigneToTable(
         item.title,
         item.montant,
@@ -387,19 +407,44 @@ fetch("http://localhost:3000/depenses")
       );
     });
   })
-  .catch((error) => {
+  .catch(error => {
     console.error("Erreur lors du chargement des dépenses", error);
   });
 
 fetch("http://localhost:3000/revenu")
-  .then((response) => response.json())
-  .then((data) => {
-    data.forEach((item) => {
-      ajouterLigneToTable1(item.title, item.montant, item.id, document.querySelector(".deleteLigne1"));
+  .then(response => response.json())
+  .then(data => {
+    data.forEach(item => {
+      ajouterLigneToTable1(
+        item.title,
+        item.montant,
+        item.id,
+        document.querySelector(".deleteLigne1")
+      );
     });
   })
-  .catch((error) => {
+  .catch(error => {
     console.error("Erreur lors du chargement des revenu", error);
   });
 
 //})
+
+// [
+//   {
+//       "id": 1,
+//       "title": "Ndekki",
+//       "montant": 4500
+//   },
+//   {
+//       "id": 4,
+//       "title": "Transport",
+//       "montant": 700
+//   },
+//   {
+//       "id": 5,
+//       "title": "Lunch",
+//       "montant": 700
+//   }
+// ].reduce((acc, value) => {
+//   return acc + value.montant
+// }, 0)
