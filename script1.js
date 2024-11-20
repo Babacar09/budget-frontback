@@ -51,7 +51,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
            
         })
     
-     
+        if(montant < 0){
+          alert('veuiiler mettre un montant positif')
+        }
+
      
     })
  
@@ -170,6 +173,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
             responseMessage.textContent = `Erreur:${error.message}`
            
         })
+        if(montant1 < 0){
+          alert('veuiiler mettre un montant positif')
+        }
+ 
     })
 
     function ajouterLigneToTable1(montant1, montext1, id, deleteLigne1){
