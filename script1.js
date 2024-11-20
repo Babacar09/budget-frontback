@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     })
     .then(data =>{
         totalSolde.textContent = data.solde + " FCFA"
+     
     })
    .catch(error =>{
     responseMessage.textContent = `Erreur: ${error.message}`
@@ -58,70 +59,99 @@ document.addEventListener('DOMContentLoaded', ()=>{
  
    mettreajour()
     function ajouterLigneToTable(montant, montext, id, deleteLigne){
-        const tbodyTr = document.querySelector(".monTableBody")
-        const newRow = `
+      const tbodyTr = document.querySelector(".monTableBody");
+      const newRow = `
           <tr>
             <td>${id}</td> 
             <td>${montext}</td>
-            <td class="deleteDepense" >${montant}</td>
+            <td class="deleteDepense"  id="deleteDepense2" >${montant}</td>
             <td><button type="button" class="${deleteLigne}"  id="deleted123">Supprimer</button></td>
         </tr>
         `;
-        tbodyTr.insertAdjacentHTML("afterbegin", newRow);
-        const buttonSupprimerLigne = tbodyTr.querySelector(`.${deleteLigne}`)
+      tbodyTr.insertAdjacentHTML("afterbegin", newRow);
+      const buttonSupprimerLigne = tbodyTr.querySelector(`.${deleteLigne}`);
+
+      buttonSupprimerLigne.addEventListener("click", function () {
+        let alertConfirmation = confirm("vouler vous supprimer");
+        const supprimerLigne = this.closest("tr");
+        if (alertConfirmation) {
+          supprimerLigne.remove(`${id}`);
+          fetch(`http://localhost:3000/depenses/${id}`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ title: montext, montant: montant }),
+          })
+          .then((response) => {
+              if (!response.ok) {
+                throw new Error(`Erreur : ${response.statusText}`);
+              }
+              return response.json();
+           })
+          .then((data) => {
+              // Message de succès après ajout de la dépense
+              responseMessage.textContent = "Dépense ajoutée avec succès !";
+              ajouterLigneToTable(montext, montant, ".deleteLigne");
+              mettreajour(); // Mettre à jour le solde après ajout
+
+
+           })
+
+            .catch((error) => {
+              responseMessage.textContent = `Erreur : ${error.message}`;
+             
+
+            });
+          
+
+              
+
+
+             //converstion d'une chaine de caractere
+             const MontantToDelete = parseFloat(
+              supprimerLigne.querySelector(".deleteDepense").textContent
+            );
+            
+          
+            // if(isNaN(MontantToDelete)){
+            //   console.log("la valeur n'est pas un nombre valide");
+             
+            // }
+
+
+
+          
+            console.log(MontantToDelete);
+            
+            let ToutDesDepenses =
+              parseFloat(document.getElementById("monprix1Depenses").textContent) ||
+              0;
+              ToutDesDepenses -= MontantToDelete;
+            document.getElementById("monprix1Depenses").textContent =   ToutDesDepenses.toFixed(2);
+           
+              mettreajour();
+              location.reload();
+             
+
+              console.log(ToutDesDepenses);
+       
+
+          // if(isNaN(ToutDesDepenses) && isNaN(MontantToDelete)){
+
+          // }
+
+          
+          //ToutDesDepenses.reset()
+
+         
+          // Mettre à jour le solde après suppression
+           
         
-        buttonSupprimerLigne.addEventListener("click", function () {
-            let alertConfirmation = confirm('vouler vous supprimer')
-            const supprimerLigne = this.closest('tr')
-            if(alertConfirmation){
-                supprimerLigne.remove(`${id}`)
-
-                fetch(`http://localhost:3000/depenses/${id}`, {
-                    method: "DELETE",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ title: montext, montant: montant }),
-                  })
-                    .then(response => {
-                      if (!response.ok) {
-                        throw new Error(`Erreur : ${response.statusText}`);
-                      }
-                      return response.json();
-                    })
-                    .then(data => {
-                        // Message de succès après ajout de la dépense
-                        responseMessage.textContent = "Dépense ajoutée avec succès !";
-                        ajouterLigneToTable(montext, montant, ".deleteLigne");
-                        mettreajour(); // Mettre à jour le solde après ajout
-                      })
-                    
-                  
-                    .catch(error => {
-                      responseMessage.textContent = `Erreur : ${error.message}`;
-                    });
-                    const MontantToDelete = parseFloat(
-                        supprimerLigne.querySelector(".deleteDepense").textContent
-                      ) ;
-                      let ToutDesDepenses =
-                        parseFloat(document.getElementById("monprix1Depenses").textContent) ||
-                        0;
-                     ;
-                     ToutDesDepenses -= MontantToDelete;
-                     document.getElementById("monprix1Depenses").textContent =
-                       ToutDesDepenses.toFixed(2)
-                   
-                       
-                        
-                          console.log(ToutDesDepenses);
-                 
-
-                     
-                        
-                      // Mettre à jour le solde après suppression
-                      mettreajour();
-            }
-        })
+        }
+        
+       
+      });
     }
 
     const validateButton1 = document.getElementById('validate1')
@@ -159,7 +189,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
             <td>${id}</td> 
             <td>${montext1}</td>
             <td class="deleteDepense1" >${montant1}</td>
-            <td><button type="button" class="${deleteLigne1}"  id="deleted123">Supprimer</button></td>
+            <td><button type="button" class="${deleteLigne1}" id="deleted123">Supprimer</button></td>
         </tr>
         `
 
@@ -195,6 +225,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
                     .catch(error => {
                       responseMessage.textContent = `Erreur : ${error.message}`;
                     });
+
                     const MontantToDelete1 = parseFloat(
                         supprimerLigne1.querySelector(".deleteDepense1").textContent
                       ) ;
@@ -203,10 +234,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
                         0;
                      ;
                      ToutDesDepenses1 -= MontantToDelete1;
-                     document.getElementById("monprix1Depenses").textContent =
+                     document.getElementById("monprixRevenus").textContent =
                        ToutDesDepenses1.toFixed(2)
                    
-                       
+                       location.reload();
                         
                           console.log(ToutDesDepenses1);
                  
@@ -220,12 +251,14 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
     }
     function mettreajour() {
+     
         const depenses =
           parseFloat(document.getElementById("monprix1Depenses").textContent) || 0;
         const revenus =
           parseFloat(document.getElementById("monprixRevenus").textContent) || 0;
         const solde = revenus - depenses;
       
+       
         fetch("http://localhost:3000/solde", {
           method: "GET",
           headers: {
@@ -332,6 +365,7 @@ fetch("http://localhost:3000/depenses")
         document.querySelector(".deleteLigne")
       );
     });
+    
   })
   .catch(error => {
     console.error("Erreur lors du chargement des dépenses", error)

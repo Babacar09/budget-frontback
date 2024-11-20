@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="style.css">
 
     <script src="https://kit.fontawesome.com/fe5d57f04e.js" crossorigin="anonymous"></script>
+   
 </head>
 
 <body>
@@ -65,7 +66,7 @@
             <div class="form"  >
                 <form method="" >
                     <input type="text" name="title" id="montext" class="monInput" placeholder="mettre le nom"   pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s]+"  required ><br><br>
-                    <input type="number" name="montant" id="montant" class="monInput" placeholder="mettre le montant" required ><br><br>
+                    <input type="number" name="montant" id="montant" class="monInput" placeholder="mettre le montant" min="0" ><br><br>
                     <button type="submit" id="validate"  class="validate" >valider</button>
                 </form>
             </div>
@@ -281,8 +282,6 @@
 </body>
 
 
-<!-- <script src="./script.js"></script>   -->
- <!-- <script src="./script1.js"></script>  -->
- <script src="./script1.js"></script> 
 
+<script src="./script1.js"></script> 
 </html>
