@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
         })
     
         if(montant < 0){
-          alert('veuiiler mettre un montant positif')
+          alert('veuiiler mettre un bon montant ')
         }
 
      
@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
            
         })
         if(montant1 < 0){
-          alert('veuiiler mettre un montant positif')
+          alert('veuiiler mettre un  bon montant ')
         }
  
     })
