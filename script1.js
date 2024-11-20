@@ -28,9 +28,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     validateButton.addEventListener('click', ()=>{
         const montext = document.getElementById('montext').value
         const montant = parseFloat( document.getElementById('montant').value)
-
-        // ajouterLigneToTable( montext, montant, ".deleteLigne")
-        // mettreajour()
+ 
         fetch('http://localhost:3000/depenses/create',{
             method:"POST",
             headers:{"Content-Type":"application/json"},
@@ -114,10 +112,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
             );
             
           
-            // if(isNaN(MontantToDelete)){
-            //   console.log("la valeur n'est pas un nombre valide");
-             
-            // }
+           
 
 
 
@@ -137,12 +132,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
               console.log(ToutDesDepenses);
        
 
-          // if(isNaN(ToutDesDepenses) && isNaN(MontantToDelete)){
-
-          // }
-
           
-          //ToutDesDepenses.reset()
 
          
           // Mettre à jour le solde après suppression
@@ -275,8 +265,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
           .then(data => {
             // Message de succès après ajout de la dépense
             responseMessage.textContent = "Dépense ajoutée avec succès !";
-            //ajouterLigneToTable(montext1, montant1, ".deleteLigne1");
-            // mettreajour(); // Mettre à jour le solde après ajout
+          
           })
           .catch(error => {
             responseMessage.textContent = `Erreur : ${error.message}`;
@@ -298,8 +287,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
           .then(data => {
             // Message de succès après ajout de la dépense
             responseMessage.textContent = "Dépense ajoutée avec succès !";
-            //ajouterLigneToTable(montext1, montant1, ".deleteLigne1");
-            //mettreajour(); // Mettre à jour le solde après ajout
+        
             document.getElementById("monSoldes").textContent = solde.toFixed(2);
           })
           .catch(error => {
@@ -316,7 +304,7 @@ const monButton = document.getElementById("AddButton");
 const maValidate = document.getElementById("validate");
 const close = document.querySelector(".close");
 
-//const deletedresult = document.querySelector(".deleted");
+
 
 maValidate.onclick = function () {
   addForm.style.display = "none";
@@ -335,7 +323,6 @@ const monButton1 = document.getElementById("AddButton1");
 const maValidate1 = document.getElementById("validate1");
 const close1 = document.querySelector(".close1");
 
-//const deletedresult = document.querySelector(".deleted");
 
 maValidate1.onclick = function () {
   addForm1.style.display = "none";
@@ -395,4 +382,3 @@ fetch("http://localhost:3000/depenses")
     console.error("Erreur lors du chargement des revenu", error);
   });
 
-//})
